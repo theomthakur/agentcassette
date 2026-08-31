@@ -1,0 +1,7 @@
+node_modules/
+dist/
+coverage/
+.agentcassette/usage.json
+.agentcassette/usage.ndjson
+*.tgz
+.DS_Store
