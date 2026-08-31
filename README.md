@@ -247,3 +247,13 @@ agentcassette records and replays deterministic agent behavior. It does not eval
 ## License
 
 MIT
+
+
+---
+
+Sibling project: [benchtrace](https://github.com/theomthakur/benchtrace), trace-first evaluation for LLM agents.
+
+Built by Om Thakur ·
+[portfolio](https://theomthakur.github.io/portfolio) ·
+[github](https://github.com/theomthakur) ·
+[linkedin](https://linkedin.com/in/theomthakur)
