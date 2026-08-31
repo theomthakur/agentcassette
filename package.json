@@ -12,7 +12,7 @@
     "jest"
   ],
   "license": "MIT",
-  "author": "Theo M. Thakur",
+  "author": "Om Thakur",
   "sideEffects": false,
   "publishConfig": {
     "access": "public"
@@ -61,5 +61,13 @@
     "tsup": "8.5.1",
     "typescript": "5.9.3",
     "vitest": "3.2.7"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theomthakur/agentcassette.git"
+  },
+  "bugs": {
+    "url": "https://github.com/theomthakur/agentcassette/issues"
+  },
+  "homepage": "https://github.com/theomthakur/agentcassette#readme"
 }

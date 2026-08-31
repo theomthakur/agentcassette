@@ -1,5 +1,47 @@
 # agentcassette
 
+[![CI](https://github.com/theomthakur/agentcassette/actions/workflows/ci.yml/badge.svg)](https://github.com/theomthakur/agentcassette/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/agentcassette)](https://www.npmjs.com/package/agentcassette)
+[![install size](https://img.shields.io/badge/dependencies-0-brightgreen)](package.json)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+**Record an LLM agent run once. Replay it in CI with zero API calls and zero non-determinism.**
+
+```bash
+npm install --save-dev agentcassette
+```
+
+Recording happens at the **semantic layer**, not the HTTP layer: messages, tool calls with their
+arguments, tool results and final output, normalized across OpenAI, Anthropic, Google and
+OpenAI-compatible shapes. A cassette therefore survives an SDK upgrade or a provider swap, which
+is exactly where HTTP-level recorders like Polly and nock break.
+
+Zero runtime dependencies.
+
+## When a replay diverges, it tells you why
+
+Matching uses a configurable request fingerprint rather than byte equality, so prompts can change
+without invalidating every cassette. When a request genuinely no longer matches, you get this
+instead of a bare failure:
+
+```
+Agent cassette diverged at turn 1 in "trip-planner".
+Expected fingerprint: sha256:4a462fea...
+Actual fingerprint:   sha256:6e2ebeae...
+
+Structured request diff:
+  $.messages[0].content[0].text (changed)
+    expected: "capital of France?"
+    actual:   "capital of Germany?"
+
+Fix the changed request, re-record this cassette intentionally, or provide a custom
+fingerprint when the change is non-behavioral.
+```
+
+You fix it from the message without opening the cassette.
+
+---
+
 Deterministic, semantic record and replay for LLM agent tests. Run agent tests in CI with **zero API calls** and no provider-shaped fixture code.
 
 ## Before and after
