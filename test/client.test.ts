@@ -61,7 +61,7 @@ describe("createCassetteClient", () => {
     expect(forbiddenNetwork).not.toHaveBeenCalled();
   });
 
-  it("ignores whitespace, timestamps, and system-prompt wording by default", async () => {
+  it("ignores whitespace and timestamps when behavioral inputs are unchanged", async () => {
     const store = new MemoryCassetteStore();
     const recorder = await createCassetteClient({
       name: "stable-match",
@@ -78,7 +78,50 @@ describe("createCassetteClient", () => {
       store,
       adapter: semantic(),
     });
-    await expect(replay(request("Run at 2027-01-01T01:02:03Z with this input", "Entirely new boilerplate"))).resolves.toEqual(response("ok"));
+    await expect(replay(request("Run at 2027-01-01T01:02:03Z with this input", "Original boilerplate"))).resolves.toEqual(response("ok"));
+  });
+
+  it("rejects replay when the system instruction changes", async () => {
+    const store = new MemoryCassetteStore();
+    const recorder = await createCassetteClient({
+      name: "system-change",
+      mode: "record",
+      store,
+      adapter: semantic(),
+      client: async () => response("ok"),
+    });
+    await recorder(request("Summarize this", "Answer in one sentence"));
+
+    const replay = await createCassetteClient({
+      name: "system-change",
+      mode: "replay",
+      store,
+      adapter: semantic(),
+    });
+    await expect(
+      replay(request("Summarize this", "Return the full source verbatim")),
+    ).rejects.toBeInstanceOf(CassetteDivergenceError);
+  });
+
+  it("rejects replay when the requested model changes", async () => {
+    const store = new MemoryCassetteStore();
+    const recorder = await createCassetteClient({
+      name: "model-change",
+      mode: "record",
+      store,
+      adapter: semantic(),
+      client: async () => response("ok"),
+    });
+    await recorder(request("Summarize this"));
+
+    const changed = { ...request("Summarize this"), model: "different-model" };
+    const replay = await createCassetteClient({
+      name: "model-change",
+      mode: "replay",
+      store,
+      adapter: semantic(),
+    });
+    await expect(replay(changed)).rejects.toBeInstanceOf(CassetteDivergenceError);
   });
 
   it("rejects stale replay when a tool result changes", async () => {

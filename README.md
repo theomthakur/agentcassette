@@ -114,12 +114,15 @@ Calls through one wrapper are serialized so concurrent application code cannot m
 
 The default request fingerprint includes:
 
+- the requested model and normalized system instructions;
 - tool names and normalized input schemas;
 - conversation role/content-part structure;
 - normalized prior user turns, assistant decisions, and tool results;
 - normalized semantic text of the final user turn.
 
-It ignores model names, system-prompt text, whitespace changes, and timestamps. Replace it when your agent has different behavioral boundaries:
+It ignores whitespace changes and timestamps. Model and system-instruction changes are treated as
+behavioral changes because either can alter an agent's decision. Replace the fingerprint when your
+agent has different behavioral boundaries:
 
 ```ts
 const chat = await createCassetteClient({

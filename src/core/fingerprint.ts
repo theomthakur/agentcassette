@@ -18,6 +18,9 @@ export const defaultFingerprint: FingerprintFunction = (request) => {
   const semanticFinalUserTurn = finalUser
     ? normalizeSemanticText(contentToText(finalUser.content))
     : "";
+  const systemInstructions = request.messages
+    .filter((message) => message.role === "system")
+    .map((message) => normalizeSemanticText(contentToText(message.content)));
   const decisionHistory = request.messages.flatMap((message, index) => {
     if (message.role === "system" || message === finalUser) return [];
     return [{
@@ -29,7 +32,14 @@ export const defaultFingerprint: FingerprintFunction = (request) => {
       ...(message.toolCallId === undefined ? {} : { toolCallId: message.toolCallId }),
     }];
   });
-  const canonical = stableStringify({ tools, shape, decisionHistory, semanticFinalUserTurn });
+  const canonical = stableStringify({
+    model: request.model ?? null,
+    tools,
+    shape,
+    systemInstructions,
+    decisionHistory,
+    semanticFinalUserTurn,
+  });
   return `sha256:${createHash("sha256").update(canonical).digest("hex")}`;
 };
 
