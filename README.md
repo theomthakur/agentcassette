@@ -5,18 +5,17 @@
 [![install size](https://img.shields.io/badge/dependencies-0-brightgreen)](package.json)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**Record an LLM agent run once. Replay it in CI with zero API calls and zero non-determinism.**
+**Record an agent run once, then replay it in tests without calling the model provider again.**
+
+**Package:** [npm](https://www.npmjs.com/package/agentcassette) · **Source:** [GitHub](https://github.com/theomthakur/agentcassette)
 
 ```bash
 npm install --save-dev agentcassette
 ```
 
-Recording happens at the **semantic layer**, not the HTTP layer: messages, tool calls with their
-arguments, tool results and final output, normalized across OpenAI, Anthropic, Google and
-OpenAI-compatible shapes. A cassette therefore survives an SDK upgrade or a provider swap, which
-is exactly where HTTP-level recorders like Polly and nock break.
+AgentCassette records messages, tool calls, tool results, and final output in a provider-neutral format. Tests therefore do not depend on live APIs, changing model responses, or provider-specific HTTP payloads. Adapters support OpenAI, Anthropic, Google, and OpenAI-compatible clients.
 
-Zero runtime dependencies.
+The package has zero runtime dependencies.
 
 ## When a replay diverges, it tells you why
 
@@ -39,10 +38,6 @@ fingerprint when the change is non-behavioral.
 ```
 
 You fix it from the message without opening the cassette.
-
----
-
-Deterministic, semantic record and replay for LLM agent tests. Run agent tests in CI with **zero API calls** and no provider-shaped fixture code.
 
 ## Before and after
 
